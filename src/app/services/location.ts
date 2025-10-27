@@ -17,7 +17,6 @@ export class LocationService {
 
   // Obtenir la position GPS actuelle avec Capacitor
   async getCurrentPosition(): Promise<LocationData> {
-    console.log('getCurrentPosition - Début');
 
     try {
       // Utiliser Capacitor Geolocation
@@ -26,8 +25,6 @@ export class LocationService {
         timeout: 10000,
         maximumAge: 0
       });
-
-      console.log('Position obtenue:', position);
 
       const location: LocationData = {
         latitude: position.coords.latitude,
