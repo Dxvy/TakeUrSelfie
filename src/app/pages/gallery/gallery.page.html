@@ -39,7 +39,7 @@
     <ion-icon [name]="getEmptyIcon()" class="empty-icon"></ion-icon>
     <h2>{{ getEmptyTitle() }}</h2>
     <p>{{ getEmptyMessage() }}</p>
-    <ion-button *ngIf="photos.length === 0" routerLink="/camera" color="primary">
+    <ion-button *ngIf="photos.length === 0" routerLink="/camera" color="primary" (click)="navigateToCamera()">
       <ion-icon name="camera-outline" slot="start"></ion-icon>
       Prendre une photo
     </ion-button>

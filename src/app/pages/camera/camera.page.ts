@@ -24,6 +24,7 @@ import {
   locationOutline,
   informationCircleOutline
 } from 'ionicons/icons';
+import { Capacitor } from '@capacitor/core';
 import { PhotoService, UserPhoto } from '../../services/photo';
 import { PermissionService } from '../../services/permission.service';
 
@@ -55,6 +56,7 @@ export class CameraPage implements OnInit {
 
   lastPhoto?: UserPhoto;
   isCapturing = false;
+  isWeb = false;
 
   constructor() {
     addIcons({
@@ -65,10 +67,19 @@ export class CameraPage implements OnInit {
       locationOutline,
       informationCircleOutline
     });
+
+    // Détecter si on est sur le web
+    this.isWeb = Capacitor.getPlatform() === 'web';
+    console.log('📱 Plateforme:', Capacitor.getPlatform());
   }
 
   async ngOnInit() {
     await this.loadLastPhoto();
+
+    // Sur le web, afficher un message d'information sur les permissions
+    if (this.isWeb) {
+      console.log('🌐 Mode web détecté');
+    }
   }
 
   async ionViewWillEnter() {
@@ -84,56 +95,107 @@ export class CameraPage implements OnInit {
   }
 
   async takePicture() {
-    console.log('takePicture - Début');
+    console.log('📷 takePicture - Début');
+    console.log('📱 Plateforme:', Capacitor.getPlatform());
 
-    // Vérifier les permissions caméra
+    // Sur le web, afficher un message explicatif avant la première capture
+    if (this.isWeb && !this.lastPhoto) {
+      await this.showWebCameraInfo();
+    }
+
+    // 1. Vérifier les permissions caméra
     try {
+      console.log('🔐 Vérification permission caméra...');
       const hasCameraPermission = await this.permissionService.checkCameraPermission();
-      console.log('Permission caméra:', hasCameraPermission);
+      console.log('📋 Permission caméra:', hasCameraPermission);
 
       if (!hasCameraPermission) {
-        console.log('Permission caméra refusée');
+        console.log('❌ Permission caméra refusée');
+        // Le service a déjà affiché une alerte
         return;
       }
+
+      console.log('✅ Permission caméra OK');
     } catch (error) {
-      console.error('Erreur vérification permission caméra:', error);
-      await this.showToast('Erreur lors de la vérification des permissions', 'danger');
+      console.error('❌ Erreur vérification permission caméra:', error);
+      await this.showToast('Erreur lors de la vérification des permissions de caméra', 'danger');
       return;
     }
 
-    // Vérifier les permissions localisation
+    // 2. Vérifier les permissions localisation (optionnel)
+    let hasLocationPermission = false;
     try {
-      const hasLocationPermission = await this.permissionService.checkLocationPermission();
-      console.log('Permission localisation:', hasLocationPermission);
+      console.log('🔐 Vérification permission localisation...');
+      hasLocationPermission = await this.permissionService.checkLocationPermission();
+      console.log('📋 Permission localisation:', hasLocationPermission);
 
       if (!hasLocationPermission) {
+        console.log('⚠️ Permission localisation refusée - Photo sera prise sans localisation');
         await this.showToast('Photo prise sans localisation', 'warning');
       }
     } catch (error) {
-      console.error('Erreur vérification permission localisation:', error);
+      console.error('⚠️ Erreur vérification permission localisation:', error);
       await this.showToast('Photo prise sans localisation', 'warning');
     }
 
+    // 3. Prendre la photo
     try {
       this.isCapturing = true;
-      console.log('Lancement capture photo...');
+      console.log('📸 Lancement capture photo...');
 
       const photo = await this.photoService.takePicture();
       this.lastPhoto = photo;
 
-      await this.showToast('Photo capturée avec succès !', 'success');
-      console.log('Photo capturée:', photo);
-    } catch (error: any) {
-      console.error('Erreur lors de la capture:', error);
-
-      if (error.message && error.message.includes('cancelled')) {
-        await this.showToast('Capture annulée', 'warning');
+      // Message de succès différent selon la localisation
+      if (photo.location) {
+        await this.showToast('Photo capturée avec localisation ! 📍', 'success');
       } else {
-        await this.showToast('Erreur lors de la capture', 'danger');
+        await this.showToast('Photo capturée avec succès ! 📷', 'success');
+      }
+
+      console.log('✅ Photo capturée:', {
+        id: photo.id,
+        hasLocation: !!photo.location,
+        hasAddress: !!photo.address
+      });
+
+    } catch (error: any) {
+      console.error('❌ Erreur lors de la capture:', error);
+
+      // Messages d'erreur spécifiques
+      if (error.message && error.message.includes('cancelled')) {
+        console.log('ℹ️ Capture annulée par l\'utilisateur');
+        await this.showToast('Capture annulée', 'warning');
+      } else if (error.message && error.message.includes('User denied')) {
+        console.log('❌ Permission refusée pendant la capture');
+        await this.showToast('Permission refusée. Veuillez autoriser l\'accès à la caméra.', 'danger');
+      } else {
+        await this.showToast('Erreur lors de la capture de la photo', 'danger');
       }
     } finally {
       this.isCapturing = false;
     }
+  }
+
+  /**
+   * Afficher un message d'information sur les permissions web
+   */
+  private async showWebCameraInfo() {
+    const alert = await this.alertController.create({
+      header: '📷 Accès à la caméra',
+      message:
+        'Votre navigateur va vous demander l\'autorisation d\'accéder à votre caméra.\n\n' +
+        'Cliquez sur "Autoriser" dans la popup qui va apparaître.',
+      buttons: [
+        {
+          text: 'J\'ai compris',
+          role: 'cancel'
+        }
+      ]
+    });
+
+    await alert.present();
+    await alert.onDidDismiss();
   }
 
   viewLastPhoto() {
@@ -161,7 +223,7 @@ export class CameraPage implements OnInit {
   private async showToast(message: string, color: string = 'primary') {
     const toast = await this.toastController.create({
       message,
-      duration: 2000,
+      duration: 3000,
       position: 'top',
       color
     });

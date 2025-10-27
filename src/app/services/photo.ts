@@ -27,6 +27,8 @@ export class PhotoService {
 
   constructor() {}
 
+
+
   // Charger les photos sauvegardées
   async loadSaved(): Promise<void> {
     console.log('loadSaved - Chargement des photos');
@@ -175,3 +177,5 @@ export class PhotoService {
     };
   }
 }
+
+
