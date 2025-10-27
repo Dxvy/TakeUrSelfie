@@ -35,7 +35,14 @@
       {{ formatTimestamp(photo.timestamp) }}
     </p>
 
-    <p *ngIf="photo.location" class="location">
+    <!-- ⭐ NOUVEAU : Afficher l'adresse au lieu des coordonnées -->
+    <p *ngIf="photo.address" class="location">
+      <ion-icon name="location-outline" size="small"></ion-icon>
+      {{ photo.address }}
+    </p>
+
+    <!-- Fallback : coordonnées si pas d'adresse -->
+    <p *ngIf="!photo.address && photo.location" class="location">
       <ion-icon name="location-outline" size="small"></ion-icon>
       {{ photo.location.latitude | number:'1.4-4' }},
       {{ photo.location.longitude | number:'1.4-4' }}

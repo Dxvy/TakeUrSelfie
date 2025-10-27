@@ -1,20 +1,70 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
-      Blank
+      <div class="app-title">
+        <ion-icon name="camera" class="title-icon"></ion-icon>
+        TakeUrSelfie
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="hero-section">
+    <ion-icon name="images" class="hero-icon"></ion-icon>
+    <h1 class="hero-title">Capturez vos moments</h1>
+    <p class="hero-subtitle">Prenez des selfies, géolocalisez-les et partagez vos souvenirs</p>
+  </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div class="action-cards">
+    <!-- Carte Caméra -->
+    <ion-card class="action-card camera-card" button (click)="navigateToCamera()">
+      <div class="card-icon-wrapper camera-bg">
+        <ion-icon name="camera" class="card-icon"></ion-icon>
+      </div>
+      <ion-card-header>
+        <ion-card-title>Prendre une photo</ion-card-title>
+        <ion-card-subtitle>Capturez un nouveau moment</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <!-- Carte Galerie -->
+    <ion-card class="action-card gallery-card" button (click)="navigateToGallery()">
+      <div class="card-icon-wrapper gallery-bg">
+        <ion-icon name="images" class="card-icon"></ion-icon>
+      </div>
+      <ion-card-header>
+        <ion-card-title>Ma galerie</ion-card-title>
+        <ion-card-subtitle>{{ photoCount }} photo{{ photoCount > 1 ? 's' : '' }}</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+
+    <!-- Carte Carte -->
+    <ion-card class="action-card map-card" button (click)="navigateToMap()">
+      <div class="card-icon-wrapper map-bg">
+        <ion-icon name="map" class="card-icon"></ion-icon>
+      </div>
+      <ion-card-header>
+        <ion-card-title>Carte interactive</ion-card-title>
+        <ion-card-subtitle>Explorez vos photos</ion-card-subtitle>
+      </ion-card-header>
+    </ion-card>
+  </div>
+
+  <!-- Section statistiques -->
+  <div class="stats-section" *ngIf="photoCount > 0">
+    <h2 class="stats-title">Statistiques</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <ion-icon name="heart" color="danger"></ion-icon>
+        <div class="stat-value">{{ likedCount }}</div>
+        <div class="stat-label">Photos aimées</div>
+      </div>
+      <div class="stat-item">
+        <ion-icon name="location" color="primary"></ion-icon>
+        <div class="stat-value">{{ geolocatedCount }}</div>
+        <div class="stat-label">Géolocalisées</div>
+      </div>
+    </div>
   </div>
 </ion-content>

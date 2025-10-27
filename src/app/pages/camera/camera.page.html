@@ -1,13 +1,84 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>camera</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Appareil photo</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">camera</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="camera-content">
+  <div class="camera-container">
+    <!-- Zone de prévisualisation -->
+    <div class="preview-section">
+      <div class="preview-placeholder" *ngIf="!lastPhoto">
+        <ion-icon name="camera-outline" class="placeholder-icon"></ion-icon>
+        <p>Aucune photo prise</p>
+      </div>
+
+      <div class="preview-image" *ngIf="lastPhoto">
+        <img [src]="lastPhoto.webviewPath" alt="Dernière photo" />
+        <div class="preview-overlay">
+          <ion-button fill="clear" (click)="viewLastPhoto()">
+            <ion-icon name="expand-outline" slot="icon-only"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton de capture -->
+    <div class="capture-section">
+      <div class="capture-button-wrapper">
+        <button
+          class="capture-button"
+          (click)="takePicture()"
+          [disabled]="isCapturing"
+        >
+          <div class="capture-inner"></div>
+        </button>
+      </div>
+
+      <p class="capture-hint">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Appuyez pour prendre une photo
+      </p>
+    </div>
+
+    <!-- Informations -->
+    <div class="info-section" *ngIf="lastPhoto">
+      <div class="info-card">
+        <div class="info-item">
+          <ion-icon name="time-outline" color="primary"></ion-icon>
+          <span>{{ formatTimestamp(lastPhoto.timestamp) }}</span>
+        </div>
+
+        <div class="info-item" *ngIf="lastPhoto.location">
+          <ion-icon name="location-outline" color="success"></ion-icon>
+          <span>
+            {{ lastPhoto.location.latitude | number:'1.4-4' }},
+            {{ lastPhoto.location.longitude | number:'1.4-4' }}
+          </span>
+        </div>
+
+        <div class="info-item" *ngIf="!lastPhoto.location">
+          <ion-icon name="location-outline" color="medium"></ion-icon>
+          <span>Localisation non disponible</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons" *ngIf="lastPhoto">
+      <ion-button expand="block" color="primary" (click)="navigateToGallery()">
+        <ion-icon name="images-outline" slot="start"></ion-icon>
+        Voir la galerie
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="loading-overlay" *ngIf="isCapturing">
+    <ion-spinner name="crescent" color="light"></ion-spinner>
+    <p>Capture en cours...</p>
+  </div>
 </ion-content>

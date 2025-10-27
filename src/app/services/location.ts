@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Geolocation } from '@capacitor/geolocation';
 
 export interface LocationData {
   latitude: number;
@@ -14,8 +15,42 @@ export class LocationService {
 
   constructor() {}
 
-  // Obtenir la position GPS actuelle
-  getCurrentPosition(): Promise<LocationData> {
+  // Obtenir la position GPS actuelle avec Capacitor
+  async getCurrentPosition(): Promise<LocationData> {
+    console.log('getCurrentPosition - Début');
+
+    try {
+      // Utiliser Capacitor Geolocation
+      const position = await Geolocation.getCurrentPosition({
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      });
+
+      console.log('Position obtenue:', position);
+
+      const location: LocationData = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        timestamp: new Date(position.timestamp)
+      };
+
+      console.log('LocationData créé:', location);
+      return location;
+
+    } catch (error: any) {
+      console.error('Erreur GPS Capacitor:', error);
+
+      // Fallback sur l'API Web si Capacitor échoue (pour test web)
+      return this.getCurrentPositionWeb();
+    }
+  }
+
+  // Fallback avec l'API Web (pour navigateur)
+  private getCurrentPositionWeb(): Promise<LocationData> {
+    console.log('getCurrentPositionWeb - Fallback API Web');
+
     return new Promise((resolve, reject) => {
       if (!navigator.geolocation) {
         reject(new Error('Géolocalisation non supportée'));
@@ -30,10 +65,11 @@ export class LocationService {
             accuracy: position.coords.accuracy,
             timestamp: new Date(position.timestamp)
           };
+          console.log('Position Web obtenue:', location);
           resolve(location);
         },
         (error) => {
-          console.error('Erreur GPS:', error);
+          console.error('Erreur GPS Web:', error);
           reject(error);
         },
         {

@@ -1,13 +1,72 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>map</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Carte Interactive</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="centerOnUser()">
+        <ion-icon name="locate-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">map</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="map-content">
+  <!-- Conteneur de la carte -->
+  <div id="map" class="map-container"></div>
+
+  <!-- Liste des photos avec localisation -->
+  <div class="photos-list" *ngIf="!isMapReady && geolocatedPhotos.length > 0">
+    <div class="list-header">
+      <h3>Photos géolocalisées ({{ geolocatedPhotos.length }})</h3>
+    </div>
+    <div class="photo-items">
+      <div
+        *ngFor="let photo of geolocatedPhotos"
+        class="photo-item"
+        (click)="selectPhoto(photo)"
+      >
+        <img [src]="photo.webviewPath" alt="Photo" />
+        <div class="photo-item-info">
+          <div class="photo-title">{{ formatDate(photo.timestamp) }}</div>
+          <div class="photo-location">
+            <ion-icon name="location-outline"></ion-icon>
+            {{ photo.location?.latitude | number:'1.4-4' }},
+            {{ photo.location?.longitude | number:'1.4-4' }}
+          </div>
+        </div>
+        <ion-icon
+          name="heart"
+          color="danger"
+          class="liked-badge"
+          *ngIf="photo.liked"
+        ></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- État vide -->
+  <div class="empty-state" *ngIf="geolocatedPhotos.length === 0">
+    <ion-icon name="map-outline" class="empty-icon"></ion-icon>
+    <h2>Aucune photo géolocalisée</h2>
+    <p>Prenez des photos avec la localisation activée pour les voir apparaître sur la carte</p>
+    <ion-button routerLink="/camera" color="primary">
+      <ion-icon name="camera-outline" slot="start"></ion-icon>
+      Prendre une photo
+    </ion-button>
+  </div>
+
+  <!-- Bouton flottant -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="geolocatedPhotos.length > 0">
+    <ion-fab-button color="primary" (click)="toggleMapView()">
+      <ion-icon [name]="isMapReady ? 'list-outline' : 'map-outline'"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Loading -->
+  <div class="loading-overlay" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Chargement de la carte...</p>
+  </div>
 </ion-content>

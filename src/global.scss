@@ -35,3 +35,356 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* ============================================================
+   STYLES GLOBAUX PERSONNALISÉS POUR TAKEURSELFIE
+   ============================================================ */
+
+/* Variables globales supplémentaires */
+:root {
+  --app-max-width: 1400px;
+  --app-border-radius: 16px;
+  --app-border-radius-small: 8px;
+  --app-transition: all 0.3s ease;
+  --app-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --app-shadow-large: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Typographie améliorée */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scroll personnalisé (webkit browsers) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Styles pour les modals Ionic */
+ion-modal {
+  --border-radius: 16px 16px 0 0;
+  --box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.photo-modal {
+  --height: 90%;
+  --border-radius: 20px 20px 0 0;
+}
+
+/* Amélioration des alertes */
+.alert-wrapper {
+  border-radius: var(--app-border-radius) !important;
+
+  .alert-head {
+    padding: 20px 20px 16px !important;
+  }
+
+  .alert-message {
+    padding: 0 20px 20px !important;
+    max-height: none !important;
+  }
+
+  .alert-button-group {
+    padding: 12px 20px 20px !important;
+  }
+}
+
+/* Amélioration des toasts */
+.toast-wrapper {
+  border-radius: var(--app-border-radius-small) !important;
+  box-shadow: var(--app-shadow-large) !important;
+}
+
+/* Boutons FAB personnalisés */
+ion-fab-button {
+  --box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.4);
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Cards personnalisées globalement */
+ion-card {
+  margin: 16px;
+  border-radius: var(--app-border-radius);
+  box-shadow: var(--app-shadow);
+  transition: var(--app-transition);
+
+  &:hover {
+    box-shadow: var(--app-shadow-large);
+  }
+}
+
+/* Amélioration des inputs */
+ion-input,
+ion-textarea,
+ion-select {
+  --border-radius: var(--app-border-radius-small);
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+/* Loading spinner personnalisé */
+ion-loading {
+  --backdrop-opacity: 0.6;
+
+  .loading-wrapper {
+    border-radius: var(--app-border-radius);
+  }
+}
+
+/* Segments Ionic */
+ion-segment {
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  --color-checked: white;
+  min-height: 36px;
+  font-weight: 500;
+}
+
+/* Headers avec effet de blur */
+ion-header {
+  &.header-translucent {
+    ion-toolbar {
+      --background: rgba(var(--ion-color-primary-rgb), 0.95);
+      backdrop-filter: blur(10px);
+    }
+  }
+}
+
+/* Animations globales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Classes utilitaires */
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.slide-in-up {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.full-height {
+  height: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Responsive helpers */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Safe area pour iPhone X et plus */
+ion-content {
+  --padding-bottom: env(safe-area-inset-bottom);
+}
+
+ion-toolbar {
+  --padding-top: env(safe-area-inset-top);
+}
+
+/* Fix pour Leaflet dans Ionic */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.leaflet-pane {
+  z-index: 400;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 1000;
+}
+
+.leaflet-control {
+  z-index: 1001;
+}
+
+/* Amélioration accessibilité */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible pour accessibilité */
+*:focus-visible {
+  outline: 2px solid var(--ion-color-primary);
+  outline-offset: 2px;
+}
+
+/* Amélioration des boutons */
+ion-button {
+  --border-radius: var(--app-border-radius-small);
+  text-transform: none;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: var(--app-transition);
+
+  &:not(.button-disabled):hover {
+    transform: translateY(-2px);
+  }
+
+  &:not(.button-disabled):active {
+    transform: translateY(0);
+  }
+}
+
+/* Skeleton loading (pour futures optimisations) */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: var(--app-border-radius-small);
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Mode sombre amélioré */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --app-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --app-shadow-large: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  ion-card {
+    --background: rgba(255, 255, 255, 0.05);
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Print styles (au cas où) */
+@media print {
+  ion-header,
+  ion-footer,
+  ion-fab,
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Performance - GPU acceleration pour animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}

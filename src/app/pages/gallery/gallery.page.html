@@ -1,13 +1,66 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>gallery</ion-title>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ma Galerie</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFilterMenu()">
+        <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Barre de filtres -->
+  <ion-toolbar *ngIf="showFilters">
+    <ion-segment [(ngModel)]="filterType" (ionChange)="onFilterChange()">
+      <ion-segment-button value="all">
+        <ion-label>Toutes</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="liked">
+        <ion-label>
+          <ion-icon name="heart"></ion-icon>
+          Aimées
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="geolocated">
+        <ion-label>
+          <ion-icon name="location"></ion-icon>
+          Localisées
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">gallery</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="gallery-content">
+  <!-- État vide -->
+  <div class="empty-state" *ngIf="filteredPhotos.length === 0">
+    <ion-icon [name]="getEmptyIcon()" class="empty-icon"></ion-icon>
+    <h2>{{ getEmptyTitle() }}</h2>
+    <p>{{ getEmptyMessage() }}</p>
+    <ion-button *ngIf="photos.length === 0" routerLink="/camera" color="primary">
+      <ion-icon name="camera-outline" slot="start"></ion-icon>
+      Prendre une photo
+    </ion-button>
+  </div>
+
+  <!-- Grille de photos -->
+  <div class="photos-grid" *ngIf="filteredPhotos.length > 0">
+    <app-photo-card
+      *ngFor="let photo of filteredPhotos"
+      [photo]="photo"
+      [showActions]="true"
+      (photoClicked)="openPhotoModal($event)"
+      (likeToggled)="toggleLike($event)"
+      (deleteClicked)="confirmDelete($event)"
+    ></app-photo-card>
+  </div>
+
+  <!-- Bouton flottant -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" (click)="navigateToCamera()">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

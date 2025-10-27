@@ -1,0 +1,324 @@
+.map-content {
+  --background: #f8f9fa;
+
+  // IMPORTANT : Forcer la hauteur du contenu
+  ion-content {
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  min-height: 100vh; // AJOUT IMPORTANT
+  position: fixed; // Changé de absolute à fixed
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+// AJOUT : Forcer Leaflet à prendre toute la hauteur
+#map {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+}
+
+.photos-list {
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--background);
+
+  .list-header {
+    margin-bottom: 16px;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin: 0;
+    }
+  }
+
+  .photo-items {
+    display: grid;
+    gap: 12px;
+  }
+
+  .photo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+
+    &:active {
+      transform: scale(0.98);
+    }
+
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .photo-item-info {
+      flex: 1;
+      min-width: 0;
+
+      .photo-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        margin-bottom: 4px;
+      }
+
+      .photo-location {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: var(--ion-color-medium);
+        font-family: 'Courier New', monospace;
+
+        ion-icon {
+          font-size: 14px;
+          color: var(--ion-color-success);
+        }
+      }
+    }
+
+    .liked-badge {
+      font-size: 20px;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+    }
+  }
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 24px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 100px;
+    color: var(--ion-color-medium);
+    opacity: 0.4;
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin: 0 0 24px;
+    max-width: 320px;
+    line-height: 1.5;
+  }
+
+  ion-button {
+    --border-radius: 12px;
+    font-weight: 600;
+  }
+}
+
+ion-fab {
+  margin: 16px;
+
+  ion-fab-button {
+    --box-shadow: 0 4px 16px rgba(var(--ion-color-primary-rgb), 0.4);
+
+    ion-icon {
+      font-size: 28px;
+    }
+  }
+}
+
+.loading-overlay {
+  position: fixed; // Changé de absolute à fixed
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  ion-spinner {
+    transform: scale(1.5);
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-dark);
+    margin: 0;
+  }
+}
+
+// Styles personnalisés pour les marqueurs Leaflet
+:host ::ng-deep {
+  // FORCER la hauteur de Leaflet
+  .leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+    z-index: 1;
+  }
+
+  .custom-marker {
+    background: transparent;
+    border: none;
+
+    .marker-pin {
+      width: 30px;
+      height: 42px;
+      background: var(--ion-color-primary);
+      border-radius: 50% 50% 50% 0;
+      position: relative;
+      transform: rotate(-45deg);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+      &::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+
+  .user-marker {
+    background: transparent;
+    border: none;
+
+    .user-marker-inner {
+      width: 20px;
+      height: 20px;
+      background: var(--ion-color-success);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .photo-popup {
+    img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .popup-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      p {
+        margin: 0;
+        font-size: 12px;
+        color: var(--ion-color-medium);
+      }
+
+      ion-icon {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    padding: 8px;
+  }
+
+  .leaflet-popup-tip {
+    display: none;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 768px) {
+  .photos-list {
+    padding: 12px;
+
+    .list-header h3 {
+      font-size: 18px;
+    }
+
+    .photo-item {
+      img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .photo-item-info {
+        .photo-title {
+          font-size: 13px;
+        }
+
+        .photo-location {
+          font-size: 11px;
+        }
+      }
+    }
+  }
+
+  .empty-state {
+    padding: 32px 20px;
+
+    .empty-icon {
+      font-size: 80px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+}

@@ -1,3 +1,118 @@
-<p>
-  photo-modal works!
-</p>
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Détails de la photo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleLike()">
+        <ion-icon
+          [name]="photo.liked ? 'heart' : 'heart-outline'"
+          [color]="photo.liked ? 'danger' : 'light'"
+          slot="icon-only"
+        ></ion-icon>
+      </ion-button>
+      <ion-button (click)="confirmDelete()">
+        <ion-icon name="trash-outline" color="danger" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="modal-content">
+  <!-- Image en grand -->
+  <div class="photo-viewer">
+    <img [src]="photo.webviewPath" alt="Photo" class="full-photo" />
+  </div>
+
+  <!-- Informations détaillées -->
+  <div class="photo-details">
+    <div class="detail-section">
+      <h3 class="section-title">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        Informations
+      </h3>
+
+      <div class="detail-card">
+        <div class="detail-item">
+          <div class="detail-label">
+            <ion-icon name="calendar-outline" color="primary"></ion-icon>
+            <span>Date</span>
+          </div>
+          <div class="detail-value">{{ formatDate(photo.timestamp) }}</div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label">
+            <ion-icon name="time-outline" color="primary"></ion-icon>
+            <span>Heure</span>
+          </div>
+          <div class="detail-value">{{ formatTime(photo.timestamp) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⭐ NOUVEAU : Section avec adresse -->
+    <div class="detail-section" *ngIf="photo.location">
+      <h3 class="section-title">
+        <ion-icon name="location-outline"></ion-icon>
+        Localisation
+      </h3>
+
+      <div class="detail-card">
+        <!-- Adresse lisible -->
+        <div class="detail-item" *ngIf="photo.address">
+          <div class="detail-label">
+            <ion-icon name="map-outline" color="success"></ion-icon>
+            <span>Lieu</span>
+          </div>
+          <div class="detail-value">{{ photo.address }}</div>
+        </div>
+
+        <!-- Coordonnées GPS (en petit) -->
+        <div class="detail-item">
+          <div class="detail-label">
+            <ion-icon name="navigate-outline" color="success"></ion-icon>
+            <span>Coordonnées</span>
+          </div>
+          <div class="detail-value coordinates">
+            <div>{{ photo.location.latitude | number:'1.6-6' }}°</div>
+            <div>{{ photo.location.longitude | number:'1.6-6' }}°</div>
+          </div>
+        </div>
+
+        <div class="detail-item" *ngIf="photo.location.accuracy">
+          <div class="detail-label">
+            <ion-icon name="radio-outline" color="success"></ion-icon>
+            <span>Précision</span>
+          </div>
+          <div class="detail-value">± {{ photo.location.accuracy | number:'1.0-0' }}m</div>
+        </div>
+
+        <ion-button
+          expand="block"
+          fill="outline"
+          (click)="showOnMap()"
+          class="map-button"
+        >
+          <ion-icon name="map-outline" slot="start"></ion-icon>
+          Voir sur la carte
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="detail-section" *ngIf="!photo.location">
+      <h3 class="section-title">
+        <ion-icon name="location-outline"></ion-icon>
+        Localisation
+      </h3>
+
+      <div class="detail-card no-location">
+        <ion-icon name="location-off-outline" color="medium"></ion-icon>
+        <p>Localisation non disponible pour cette photo</p>
+      </div>
+    </div>
+  </div>
+</ion-content>

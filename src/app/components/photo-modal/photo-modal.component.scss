@@ -1,0 +1,150 @@
+.modal-content {
+  --background: #f8f9fa;
+}
+
+.photo-viewer {
+  width: 100%;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  max-height: 60vh;
+
+  .full-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.photo-details {
+  padding: 20px;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0 0 12px;
+
+    ion-icon {
+      font-size: 22px;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+.detail-card {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  &.no-location {
+    text-align: center;
+    padding: 32px 16px;
+
+    ion-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .detail-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+
+    ion-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ion-color-medium);
+    }
+  }
+
+  .detail-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    text-align: right;
+    flex: 1;
+
+    &.coordinates {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+    }
+  }
+}
+
+.map-button {
+  margin-top: 16px;
+  --border-radius: 12px;
+  --border-width: 2px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .photo-viewer {
+    min-height: 40vh;
+    max-height: 50vh;
+  }
+
+  .photo-details {
+    padding: 16px;
+  }
+
+  .detail-section {
+    margin-bottom: 20px;
+
+    .section-title {
+      font-size: 16px;
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+
+    .detail-value {
+      text-align: left;
+    }
+  }
+}

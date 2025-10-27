@@ -1,0 +1,449 @@
+# 🚀 Guide de Déploiement - Capsule Selfie
+
+## 📋 Prérequis
+
+### Outils Nécessaires
+- **Node.js**: v18 ou supérieur
+- **npm**: v9 ou supérieur
+- **Ionic CLI**: `npm install -g @ionic/cli`
+- **Android Studio**: Pour le développement Android
+- **Xcode**: Pour le développement iOS (Mac uniquement)
+
+### Vérification des installations
+```bash
+node --version
+npm --version
+ionic --version
+```
+
+---
+
+## 🔧 Installation Initiale
+
+### Étape 1: Cloner/Naviguer vers le projet
+```bash
+cd /chemin/vers/votre/projet
+```
+
+### Étape 2: Installer les dépendances npm
+```bash
+npm install
+```
+
+### Étape 3: Installer les plugins Capacitor
+```bash
+npm install @capacitor/camera@latest
+npm install @capacitor/geolocation@latest
+npm install @capacitor/preferences@latest
+npm install @capacitor/app@latest
+```
+
+### Étape 4: Installer Leaflet pour la carte
+```bash
+npm install leaflet@latest
+npm install --save-dev @types/leaflet@latest
+```
+
+### Étape 5: Ajouter les plateformes
+```bash
+# Android
+ionic cap add android
+
+# iOS (Mac uniquement)
+ionic cap add ios
+```
+
+---
+
+## 🌐 Test sur Navigateur Web
+
+### Lancement du serveur de développement
+```bash
+ionic serve
+```
+
+### Limitations en mode web:
+- ❌ Caméra native non disponible (utilise l'API web)
+- ❌ Géolocalisation peut nécessiter HTTPS
+- ✅ Interface fonctionnelle
+- ✅ Navigation testable
+- ✅ Carte Leaflet fonctionnelle
+
+### URL de test:
+```
+http://localhost:8100
+```
+
+---
+
+## 📱 Configuration Android
+
+### Étape 1: Configuration AndroidManifest.xml
+
+Chemin: `android/app/src/main/AndroidManifest.xml`
+
+Ajouter les permissions (voir artifact android_manifest):
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET" />
+```
+
+### Étape 2: Créer file_paths.xml
+
+Chemin: `android/app/src/main/res/xml/file_paths.xml`
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-files-path name="my_images" path="/" />
+    <external-path name="external_files" path="." />
+    <cache-path name="my_cache_images" path="/" />
+</paths>
+```
+
+### Étape 3: Synchroniser le projet
+```bash
+ionic cap sync android
+```
+
+### Étape 4: Build et tester
+```bash
+# Ouvrir dans Android Studio
+ionic cap open android
+
+# Ou directement depuis CLI
+ionic cap run android -l --external
+```
+
+### Configuration Android Studio:
+1. Sélectionner un émulateur ou connecter un appareil
+2. Activer le mode développeur sur l'appareil
+3. Cliquer sur Run (▶️)
+
+### Tester les permissions:
+1. Lancer l'app
+2. Aller sur "Prendre une photo"
+3. Accepter permission caméra
+4. Accepter permission localisation
+5. Prendre une photo
+6. Vérifier dans la galerie
+
+---
+
+## 🍎 Configuration iOS
+
+### Étape 1: Configuration Info.plist
+
+Chemin: `ios/App/App/Info.plist`
+
+Ajouter les descriptions de permissions (voir artifact ios_infoplist):
+```xml
+<key>NSCameraUsageDescription</key>
+<string>L'application a besoin d'accéder à la caméra...</string>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>L'application a besoin de votre localisation...</string>
+```
+
+### Étape 2: Synchroniser le projet
+```bash
+ionic cap sync ios
+```
+
+### Étape 3: Ouvrir dans Xcode
+```bash
+ionic cap open ios
+```
+
+### Étape 4: Configuration dans Xcode
+1. Sélectionner le projet "App" dans le navigateur
+2. Onglet "Signing & Capabilities"
+3. Sélectionner votre équipe Apple Developer
+4. Vérifier le Bundle Identifier
+
+### Étape 5: Tester
+1. Sélectionner un simulateur ou appareil
+2. Cliquer sur Run (▶️)
+3. **Note**: Les simulateurs iOS n'ont pas de caméra réelle
+
+### Tester sur appareil physique iOS:
+1. Connecter l'iPhone/iPad via USB
+2. Faire confiance à l'ordinateur sur l'appareil
+3. Sélectionner l'appareil dans Xcode
+4. Run
+
+---
+
+## 🏗️ Build Production
+
+### Build Web
+```bash
+ionic build --prod
+
+# Les fichiers sont dans www/
+```
+
+### Build Android (APK)
+
+#### Via Android Studio:
+1. `Build > Build Bundle(s) / APK(s) > Build APK(s)`
+2. L'APK sera dans `android/app/build/outputs/apk/`
+
+#### Via ligne de commande:
+```bash
+cd android
+./gradlew assembleDebug
+# APK dans: app/build/outputs/apk/debug/
+```
+
+#### Pour release (signé):
+```bash
+./gradlew assembleRelease
+```
+
+### Build iOS (IPA)
+
+#### Via Xcode:
+1. Product > Archive
+2. Une fois archivé: Distribute App
+3. Choisir méthode (App Store, Ad Hoc, etc.)
+
+---
+
+## 🧪 Tests et Debugging
+
+### Chrome DevTools pour Android
+```bash
+# Connecter appareil Android en USB
+# Sur Chrome desktop: chrome://inspect
+```
+
+### Safari Web Inspector pour iOS
+```bash
+# Sur Mac: Safari > Develop > [Votre iPhone]
+```
+
+### Logs Natifs
+
+#### Android (Logcat):
+```bash
+# Via Android Studio: Logcat tab
+# Ou via adb:
+adb logcat | grep "Capacitor"
+```
+
+#### iOS (Console):
+```bash
+# Via Xcode: View > Debug Area > Console
+```
+
+### Commandes utiles:
+```bash
+# Nettoyer le projet
+ionic cap sync
+ionic build
+ionic cap copy
+
+# Réinstaller les dépendances
+rm -rf node_modules package-lock.json
+npm install
+ionic cap sync
+```
+
+---
+
+## 🐛 Résolution des Problèmes Courants
+
+### Problème: "Camera permission denied"
+**Solution**:
+1. Vérifier AndroidManifest.xml / Info.plist
+2. Désinstaller et réinstaller l'app
+3. Vérifier paramètres appareil
+
+### Problème: "Geolocation not working"
+**Solution**:
+1. Activer GPS sur l'appareil
+2. Donner permission dans paramètres de l'app
+3. Tester en extérieur (meilleure réception)
+
+### Problème: Carte ne s'affiche pas
+**Solution**:
+1. Vérifier connexion Internet
+2. Vérifier console pour erreurs Leaflet
+3. S'assurer que leaflet.css est importé dans angular.json
+
+### Problème: Photos ne se sauvegardent pas
+**Solution**:
+1. Vérifier Capacitor Preferences installé
+2. Effacer cache: `ionic cap sync`
+3. Vérifier logs pour erreurs de stockage
+
+### Problème: Build échoue
+**Solution**:
+```bash
+# Nettoyer complètement
+rm -rf node_modules platforms plugins www
+npm install
+ionic build
+ionic cap sync
+```
+
+### Problème: Permissions ne se demandent pas
+**Solution**:
+1. Désinstaller l'app complètement
+2. Vérifier configuration native (AndroidManifest/Info.plist)
+3. Réinstaller: `ionic cap run android/ios`
+
+---
+
+## 📊 Checklist de Test
+
+### Tests Fonctionnels:
+
+#### Page d'Accueil ✅
+- [ ] Navigation vers caméra
+- [ ] Navigation vers galerie
+- [ ] Navigation vers carte
+- [ ] Statistiques s'affichent correctement
+
+#### Page Caméra ✅
+- [ ] Bouton de capture fonctionne
+- [ ] Permission caméra demandée
+- [ ] Permission localisation demandée
+- [ ] Photo capturée s'affiche
+- [ ] Métadonnées correctes (date, coordonnées)
+- [ ] Navigation vers galerie
+
+#### Galerie ✅
+- [ ] Photos s'affichent en grille
+- [ ] Filtres fonctionnent (toutes/aimées/localisées)
+- [ ] Like/Unlike fonctionne
+- [ ] Suppression avec confirmation
+- [ ] Modal de détails s'ouvre
+- [ ] FAB navigation vers caméra
+
+#### Modal Photo ✅
+- [ ] Image en grand format
+- [ ] Informations détaillées
+- [ ] Like/Unlike
+- [ ] Suppression
+- [ ] "Voir sur carte" (si géolocalisée)
+- [ ] Fermeture
+
+#### Carte ✅
+- [ ] Carte s'affiche avec tuiles
+- [ ] Marqueurs pour photos géolocalisées
+- [ ] Marqueur utilisateur
+- [ ] Popups sur marqueurs
+- [ ] Centrage sur position utilisateur
+- [ ] Navigation vers modal photo
+- [ ] Vue liste alternative
+
+#### Permissions ✅
+- [ ] Alerte si caméra refusée
+- [ ] Alerte si localisation refusée
+- [ ] Message pour ouvrir paramètres
+- [ ] App continue si localisation refusée
+- [ ] Alertes répétées si nécessaire
+
+---
+
+## 📈 Performance
+
+### Optimisations Appliquées:
+- ✅ Lazy loading des pages
+- ✅ Standalone components
+- ✅ Images en webPath (pas de duplication)
+- ✅ Stockage optimisé (JSON)
+
+### Métriques à surveiller:
+- Temps de chargement initial
+- Temps de capture photo
+- Temps d'affichage de la carte
+- Taille de l'APK/IPA
+
+---
+
+## 📦 Distribution
+
+### Google Play Store (Android)
+
+1. **Créer un compte développeur Google Play**
+2. **Générer un keystore signé**:
+```bash
+keytool -genkey -v -keystore my-release-key.keystore \
+  -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+3. **Configurer gradle pour signature**:
+Fichier: `android/app/build.gradle`
+
+4. **Build release**:
+```bash
+cd android
+./gradlew bundleRelease
+```
+
+5. **Upload sur Google Play Console**
+
+### Apple App Store (iOS)
+
+1. **Créer un compte Apple Developer**
+2. **Créer App ID dans Apple Developer Portal**
+3. **Xcode: Product > Archive**
+4. **Organizer > Distribute App**
+5. **Soumettre pour review**
+
+---
+
+## 🔄 Mise à Jour
+
+### Pour mettre à jour l'app:
+
+```bash
+# 1. Modifier le code
+# 2. Incrémenter version dans package.json et config.xml
+# 3. Build
+ionic build --prod
+
+# 4. Sync
+ionic cap sync
+
+# 5. Build natif et publier
+```
+
+---
+
+## 📝 Notes Importantes
+
+### Sécurité:
+- Ne jamais commit les keystores
+- Utiliser variables d'environnement pour secrets
+- Tester les permissions sur appareils réels
+
+### Performance:
+- Compresser les images si stockage devient lourd
+- Limiter le nombre de photos si nécessaire
+- Optimiser les marqueurs sur la carte
+
+### Accessibilité:
+- Tester avec TalkBack (Android)
+- Tester avec VoiceOver (iOS)
+- Vérifier contrastes
+
+---
+
+## 🎓 Ressources Utiles
+
+- [Documentation Ionic](https://ionicframework.com/docs)
+- [Documentation Capacitor](https://capacitorjs.com/docs)
+- [Guide Android](https://developer.android.com/guide)
+- [Guide iOS](https://developer.apple.com/documentation)
+- [Leaflet Docs](https://leafletjs.com/reference.html)
+
+---
+
+**Bonne chance pour votre projet ! 🚀**
