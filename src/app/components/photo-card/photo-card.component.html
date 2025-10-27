@@ -1,0 +1,44 @@
+<ion-card class="photo-card" (click)="onPhotoClick()">
+  <!-- Image -->
+  <div class="image-container">
+    <img [src]="photo.webviewPath" alt="Photo" class="photo-image" />
+
+    <!-- Overlay avec actions -->
+    <div class="photo-overlay" *ngIf="showActions">
+      <ion-button
+        fill="clear"
+        size="small"
+        (click)="onLikeClick($event)"
+        class="action-button like-button"
+      >
+        <ion-icon
+          [name]="photo.liked ? 'heart' : 'heart-outline'"
+          [color]="photo.liked ? 'danger' : 'light'"
+        ></ion-icon>
+      </ion-button>
+
+      <ion-button
+        fill="clear"
+        size="small"
+        (click)="onDeleteClick($event)"
+        class="action-button delete-button"
+      >
+        <ion-icon name="trash-outline" color="light"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+
+  <!-- Informations de la photo -->
+  <ion-card-content class="photo-info">
+    <p class="timestamp">
+      <ion-icon name="time-outline" size="small"></ion-icon>
+      {{ formatTimestamp(photo.timestamp) }}
+    </p>
+
+    <p *ngIf="photo.location" class="location">
+      <ion-icon name="location-outline" size="small"></ion-icon>
+      {{ photo.location.latitude | number:'1.4-4' }},
+      {{ photo.location.longitude | number:'1.4-4' }}
+    </p>
+  </ion-card-content>
+</ion-card>
