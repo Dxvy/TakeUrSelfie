@@ -1,30 +1,17 @@
 .map-content {
   --background: #f8f9fa;
-
-  // IMPORTANT : Forcer la hauteur du contenu
-  ion-content {
-    --padding-top: 0;
-    --padding-bottom: 0;
-  }
 }
 
+// Conteneur de la carte en plein écran
 .map-container {
-  width: 100%;
-  height: 100%;
-  min-height: 100vh; // AJOUT IMPORTANT
-  position: fixed; // Changé de absolute à fixed
-  top: 0;
+  position: fixed;
+  top: 56px; // Hauteur du header
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1;
-}
-
-// AJOUT : Forcer Leaflet à prendre toute la hauteur
-#map {
   width: 100% !important;
   height: 100% !important;
-  min-height: 100vh !important;
 }
 
 .photos-list {
@@ -158,7 +145,7 @@ ion-fab {
 }
 
 .loading-overlay {
-  position: fixed; // Changé de absolute à fixed
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -182,13 +169,10 @@ ion-fab {
   }
 }
 
-// Styles personnalisés pour les marqueurs Leaflet
+// Styles personnalisés pour Leaflet
 :host ::ng-deep {
-  // FORCER la hauteur de Leaflet
   .leaflet-container {
-    height: 100% !important;
-    width: 100% !important;
-    z-index: 1;
+    font-family: var(--ion-font-family);
   }
 
   .custom-marker {
@@ -203,6 +187,7 @@ ion-fab {
       position: relative;
       transform: rotate(-45deg);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s ease;
 
       &::after {
         content: '';
@@ -215,6 +200,10 @@ ion-fab {
         left: 50%;
         transform: translate(-50%, -50%);
       }
+    }
+
+    &:hover .marker-pin {
+      transform: rotate(-45deg) scale(1.1);
     }
   }
 
@@ -234,38 +223,66 @@ ion-fab {
   }
 
   .photo-popup {
+    min-width: 200px;
+
     img {
-      width: 200px;
-      height: 150px;
+      width: 100%;
+      max-width: 200px;
+      height: auto;
+      max-height: 150px;
       object-fit: cover;
       border-radius: 8px;
       margin-bottom: 8px;
+      display: block;
     }
 
     .popup-info {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
       p {
-        margin: 0;
+        margin: 4px 0;
         font-size: 12px;
-        color: var(--ion-color-medium);
+        color: var(--ion-color-dark);
+
+        &.popup-address {
+          font-size: 11px;
+          color: var(--ion-color-medium);
+        }
       }
 
       ion-icon {
-        font-size: 18px;
+        font-size: 16px;
+        vertical-align: middle;
       }
     }
   }
 
   .leaflet-popup-content-wrapper {
     border-radius: 12px;
-    padding: 8px;
+    padding: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .leaflet-popup-content {
+    margin: 8px;
+    min-width: 200px;
   }
 
   .leaflet-popup-tip {
-    display: none;
+    background: white;
+  }
+
+  .leaflet-control-zoom {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .leaflet-control-zoom a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--ion-color-dark);
+
+    &:hover {
+      background: var(--ion-color-primary);
+      color: white;
+    }
   }
 }
 
@@ -281,6 +298,10 @@ ion-fab {
 }
 
 @media (max-width: 768px) {
+  .map-container {
+    top: 56px; // Hauteur du header mobile
+  }
+
   .photos-list {
     padding: 12px;
 
